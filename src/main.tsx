@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import ReactDOM from 'react-dom/client'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { Toaster } from '@/components/ui/sonner'
@@ -14,7 +14,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 			<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
 				<Toaster />
 				<ModalProvider />
-				<Router />
+				<Suspense fallback={null}>
+					<Router />
+				</Suspense>
 			</ThemeProvider>
 		</Provider>
 	</React.StrictMode>
