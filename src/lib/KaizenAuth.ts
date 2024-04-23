@@ -79,7 +79,7 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 		credentials: z.infer<Credentials>
 	): Promise<LoginErrorResponse | LoginTokenResponse | LoginTwoFactorResponse> {
 		try {
-			const response = await fetch(`${this.baseUrl}/auth/login`, {
+			const response = await fetch(`${this.baseUrl}/api/auth/login`, {
 				method: 'POST',
 				credentials: 'include',
 				headers: { 'Content-Type': 'application/json' },
@@ -138,7 +138,7 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 	 */
 	async loginTwoFactor(credentials: Prettify<z.infer<Credentials> & { otp: string }>): ReturnType<LoginTwoFactorFn> {
 		try {
-			const response = await fetch(`${this.baseUrl}/auth/login`, {
+			const response = await fetch(`${this.baseUrl}/api/auth/login`, {
 				method: 'POST',
 				credentials: 'include',
 				headers: { 'Content-Type': 'application/json' },
@@ -182,7 +182,7 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 	 */
 	async getProfile() {
 		try {
-			const response = await fetch(`${this.baseUrl}/auth/profile`, {
+			const response = await fetch(`${this.baseUrl}/api/auth/profile`, {
 				method: 'GET',
 				credentials: 'include',
 				headers: { 'Content-Type': 'application/json' },
@@ -212,7 +212,7 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 	 */
 	async logout() {
 		try {
-			const response = await fetch(`${this.baseUrl}/auth/logout`, {
+			const response = await fetch(`${this.baseUrl}/api/auth/logout`, {
 				method: 'POST',
 				credentials: 'include',
 				headers: { 'Content-Type': 'application/json' },
@@ -244,7 +244,7 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 		if (!code) return { error: 'No confirmation code provided' }
 
 		try {
-			const response = await fetch(`${this.baseUrl}/auth/confirm-account`, {
+			const response = await fetch(`${this.baseUrl}/api/auth/confirm-account`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -270,7 +270,7 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 	 */
 	async forgotPassword(email: string): Promise<{ error: string | null }> {
 		try {
-			const response = await fetch(`${this.baseUrl}/auth/reset-password`, {
+			const response = await fetch(`${this.baseUrl}/api/auth/reset-password`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -303,7 +303,7 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 		if (!code) return { error: 'No reset code provided' }
 
 		try {
-			const response = await fetch(`${this.baseUrl}/auth/reset-password/${code}`, {
+			const response = await fetch(`${this.baseUrl}/api/auth/reset-password/${code}`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -329,7 +329,7 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 	 */
 	async setupTwoFactor() {
 		try {
-			const response = await fetch(`${this.baseUrl}/auth/setup-twofactor`, {
+			const response = await fetch(`${this.baseUrl}/api/auth/setup-twofactor`, {
 				method: 'POST',
 				credentials: 'include',
 			})
@@ -354,7 +354,7 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 	 */
 	async confirmTwoFactor(otp: string): Promise<ConfirmTwoFactorErrorResponse | ConfirmTwoFactorResponse> {
 		try {
-			const response = await fetch(`${this.baseUrl}/auth/confirm-twofactor`, {
+			const response = await fetch(`${this.baseUrl}/api/auth/confirm-twofactor`, {
 				method: 'POST',
 				credentials: 'include',
 				headers: {
@@ -393,7 +393,7 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 	 */
 	async disableTwoFactor() {
 		try {
-			const response = await fetch(`${this.baseUrl}/auth/disable-twofactor`, {
+			const response = await fetch(`${this.baseUrl}/api/auth/disable-twofactor`, {
 				method: 'POST',
 				credentials: 'include',
 			})
