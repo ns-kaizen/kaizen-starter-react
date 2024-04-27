@@ -23,8 +23,8 @@ export const client = new Client({
 		fetchExchange,
 	],
 	fetchOptions: () => ({ credentials: 'include' }),
-	suspense: true,
-
+	// suspense: true,
+	requestPolicy: 'cache-and-network',
 	// append operation name to the query string for easier debugging
 	fetch: (url, fetchOptions) => {
 		const body = JSON.parse(fetchOptions?.body?.toString() || '{}')
