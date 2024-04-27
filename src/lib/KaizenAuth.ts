@@ -1,3 +1,4 @@
+import { toast } from 'sonner'
 import { z } from 'zod'
 import { create } from 'zustand'
 
@@ -431,12 +432,27 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 			this.getProfile().then((profile) => store.setState({ profile }))
 		}
 
+		let wasLoggedIn = this.isLoggedIn()
+		setInterval(() => {
+			if (wasLoggedIn && !this.isLoggedIn()) {
+				wasLoggedIn = false
+
+				store.setState({ isLoggedIn: false, profile: null })
+
+				toast.info('Your session has expired. Please log in again.', {
+					important: true,
+				})
+			}
+		}, 1000)
+
 		this.listeners.push((state) => {
 			if (state.isLoggedIn) {
 				// store.setState({ isLoggedIn: state.isLoggedIn })
 				this.getProfile().then((profile) => store.setState({ profile }))
+				wasLoggedIn = true
 			} else {
 				store.setState({ isLoggedIn: state.isLoggedIn, profile: null })
+				wasLoggedIn = false
 			}
 		})
 
