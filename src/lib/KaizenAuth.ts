@@ -63,7 +63,7 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 	 * Create an instance of KaizenAuth
 	 */
 	constructor(options: KaizenAuthOptions<Credentials, Profile>) {
-		this.baseUrl = options.baseUrl
+		this.baseUrl = options.baseUrl || ''
 		this.profileShape = options.profileShape
 	}
 

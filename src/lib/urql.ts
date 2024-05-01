@@ -16,7 +16,7 @@ import { cacheExchange } from 'urql'
 // })
 
 export const client = new Client({
-	url: `${import.meta.env.VITE_API_URL}/api/graphql`,
+	url: `${import.meta.env.VITE_API_URL || ''}/api/graphql`,
 	exchanges: [
 		//scalarsExchange,
 		cacheExchange,
