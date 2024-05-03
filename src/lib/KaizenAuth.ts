@@ -298,7 +298,7 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 				return { error: await response.text(), message: null }
 			}
 
-			return { error: null, message: 'Confirmation email sent' }
+			return { error: null, message: await response.text() }
 		} catch (error) {
 			console.log(error)
 			return {
