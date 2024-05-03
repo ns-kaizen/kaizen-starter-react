@@ -33,14 +33,24 @@ type LoginTwoFactorResponse = {
 	error: null
 }
 
+type ConfirmTwoFactorResponse = {
+	error: null
+	recoveryCodes: string[]
+}
+
 type ConfirmTwoFactorErrorResponse = {
 	error: string
 	recoveryCodes: []
 }
 
-type ConfirmTwoFactorResponse = {
+type ResendConfirmationResponse = {
 	error: null
-	recoveryCodes: string[]
+	message: string
+}
+
+type ResendConfirmationErrorResponse = {
+	error: string
+	message: null
 }
 
 export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodTypeAny> {
@@ -238,7 +248,7 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 		userId,
 		code,
 	}: {
-		userId?: string | null
+		userId?: string | number | null
 		code?: string | null
 	}): Promise<{ error: string | null }> {
 		if (!userId) return { error: 'No user id provided' }
@@ -262,6 +272,38 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 			console.log(error)
 			return {
 				error: error instanceof Error ? error.message : 'Unknown error',
+			}
+		}
+	}
+
+	/**
+	 * Resend the confirmation email to the user
+	 */
+	async resendConfirmation(
+		userId: string | number
+	): Promise<ResendConfirmationResponse | ResendConfirmationErrorResponse> {
+		try {
+			const response = await fetch(`${this.baseUrl}/api/auth/resend-account-confirmation`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+				body: JSON.stringify({
+					userId,
+				}),
+			})
+
+			if (!response.ok) {
+				return { error: await response.text(), message: null }
+			}
+
+			return { error: null, message: 'Confirmation email sent' }
+		} catch (error) {
+			console.log(error)
+			return {
+				error: error instanceof Error ? error.message : 'Unknown error',
+				message: null,
 			}
 		}
 	}
