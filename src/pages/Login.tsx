@@ -20,7 +20,7 @@ export const Login = () => {
 
 		const { error, twoFactor } = await auth.login({ email, password })
 
-		if (error) {
+		if (error !== null) {
 			toast.error(error)
 			return
 		}

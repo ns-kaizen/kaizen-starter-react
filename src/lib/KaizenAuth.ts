@@ -102,7 +102,7 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 				return {
 					token: null,
 					twoFactor: null,
-					error: await response.text(),
+					error: response.status === 404 ? 'Not found' : await response.text(),
 				}
 			}
 
@@ -160,7 +160,7 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 				return {
 					token: null,
 					twoFactor: null,
-					error: await response.text(),
+					error: response.status === 404 ? 'Not found' : await response.text(),
 				}
 			}
 
@@ -295,7 +295,10 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 			})
 
 			if (!response.ok) {
-				return { error: await response.text(), message: null }
+				return {
+					message: null,
+					error: response.status === 404 ? 'Not found' : await response.text(),
+				}
 			}
 
 			return { error: null, message: (await response.json()).message }
@@ -411,7 +414,7 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 					this.kick()
 				}
 				return {
-					error: await response.text(),
+					error: response.status === 404 ? 'Not found' : await response.text(),
 					recoveryCodes: [],
 				}
 			}
