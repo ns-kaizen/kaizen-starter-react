@@ -119,7 +119,9 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 				}
 			}
 
-			this.listeners.forEach((listener) => listener({ isLoggedIn: true }))
+			for (const listener of this.listeners) {
+				listener({ isLoggedIn: true })
+			}
 
 			// if the server returns a token, return it
 			return {
@@ -164,7 +166,9 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 				}
 			}
 
-			this.listeners.forEach((listener) => listener({ isLoggedIn: true }))
+			for (const listener of this.listeners) {
+				listener({ isLoggedIn: true })
+			}
 
 			return {
 				error: null,
@@ -215,7 +219,9 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 	}
 
 	private kick() {
-		this.listeners.forEach((listener) => listener({ isLoggedIn: false }))
+		for (const listener of this.listeners) {
+			listener({ isLoggedIn: false })
+		}
 	}
 
 	/**
@@ -248,7 +254,7 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 		userId,
 		code,
 	}: {
-		userId?: string | number | null
+		userId?: string | null
 		code?: string | null
 	}): Promise<{ error: string | null }> {
 		if (!userId) return { error: 'No user id provided' }
@@ -279,9 +285,7 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 	/**
 	 * Resend the confirmation email to the user
 	 */
-	async resendConfirmation(
-		userId: string | number
-	): Promise<ResendConfirmationResponse | ResendConfirmationErrorResponse> {
+	async resendConfirmation(userId: string): Promise<ResendConfirmationResponse | ResendConfirmationErrorResponse> {
 		try {
 			const response = await fetch(`${this.baseUrl}/api/auth/resend-account-confirmation`, {
 				method: 'POST',
@@ -350,6 +354,63 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 
 		try {
 			const response = await fetch(`${this.baseUrl}/api/auth/reset-password/${code}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+				body: JSON.stringify({
+					password,
+				}),
+			})
+
+			return { error: !response.ok ? await response.text() : null }
+		} catch (error) {
+			console.log(error)
+			return {
+				error: error instanceof Error ? error.message : 'Unknown error',
+			}
+		}
+	}
+
+	/**
+	 * Change the users password
+	 */
+	async changePassword({
+		password,
+		newPassword,
+	}: {
+		password: string
+		newPassword: string
+	}): Promise<{ error: string | null }> {
+		try {
+			const response = await fetch(`${this.baseUrl}/api/auth/change-password`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+				body: JSON.stringify({
+					password,
+					newPassword,
+				}),
+			})
+
+			return { error: !response.ok ? await response.text() : null }
+		} catch (error) {
+			console.log(error)
+			return {
+				error: error instanceof Error ? error.message : 'Unknown error',
+			}
+		}
+	}
+
+	/**
+	 * Log out of any other devices
+	 */
+	async purgeSessions({ password }: { password: string }): Promise<{ error: string | null }> {
+		try {
+			const response = await fetch(`${this.baseUrl}/api/auth/purge-sessions`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
