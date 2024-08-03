@@ -374,6 +374,31 @@ export class KaizenAuth<Credentials extends z.ZodTypeAny, Profile extends z.ZodT
 	}
 
 	/**
+	 * Check if a password is valid
+	 */
+	async checkPassword({ password }: { password: string }): Promise<{ error: string | null }> {
+		try {
+			const response = await fetch(`${this.baseUrl}/api/auth/check-password`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+				body: JSON.stringify({
+					password,
+				}),
+			})
+
+			return { error: !response.ok ? await response.text() : null }
+		} catch (error) {
+			console.log(error)
+			return {
+				error: error instanceof Error ? error.message : 'Unknown error',
+			}
+		}
+	}
+
+	/**
 	 * Change the users password
 	 */
 	async changePassword({
